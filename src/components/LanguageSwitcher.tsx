@@ -15,7 +15,24 @@ interface LanguageSwitcherProps {
 
 const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'default' }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('en');
+  // Initialize with language from cookie immediately
+  const [currentLanguage, setCurrentLanguage] = useState(() => {
+    try {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        const trimmed = cookie.trim();
+        if (trimmed.startsWith('googtrans=')) {
+          const value = trimmed.substring('googtrans='.length);
+          if (value && (value.includes('/pt') || value === '/en/pt')) {
+            return 'pt';
+          }
+        }
+      }
+    } catch (error) {
+      // Fallback to English on error
+    }
+    return 'en';
+  });
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
 
@@ -175,11 +192,23 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'default'
       }
     };
 
-    // Run initialization
+    // Run initialization immediately
     initLanguage();
+
+    // Also check periodically to ensure language state stays in sync with cookie
+    const syncInterval = setInterval(() => {
+      const detectedLang = getLanguageFromCookie();
+      setCurrentLanguage(prevLang => {
+        if (detectedLang !== prevLang) {
+          return detectedLang;
+        }
+        return prevLang;
+      });
+    }, 500);
 
     // Cleanup function
     return () => {
+      clearInterval(syncInterval);
       if (checkIntervalRef.current) {
         clearInterval(checkIntervalRef.current);
         checkIntervalRef.current = null;
@@ -294,25 +323,17 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'default'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <img 
-                          src={lang.flag} 
-                          alt={`${lang.name} flag`}
-                          className="w-6 h-6 object-contain"
-                          loading="lazy"
-                        />
-                        <span 
-                          className="font-medium notranslate" 
-                          style={{ 
-                            display: 'inline-block', 
-                            visibility: 'visible', 
-                            opacity: 1,
-                            color: 'black'
-                          }}
-                        >
-                          {lang.name}
-                        </span>
-                      </div>
+                      <span 
+                        className="font-medium notranslate" 
+                        style={{ 
+                          display: 'inline-block', 
+                          visibility: 'visible', 
+                          opacity: 1,
+                          color: 'black'
+                        }}
+                      >
+                        {lang.name}
+                      </span>
                       {currentLanguage === lang.code && (
                         <span className="text-[#0890C6] text-lg font-bold">✓</span>
                       )}

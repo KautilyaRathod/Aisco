@@ -132,7 +132,7 @@
                             select.dispatchEvent(event);
                             if (typeof select.onchange === 'function') {
                               try {
-                                select.onchange(event as any);
+                                select.onchange(event);
                               } catch (err) {
                                 // Silently handle
                               }
@@ -342,7 +342,7 @@
                       
                       if (typeof select.onchange === 'function') {
                         try {
-                          select.onchange(event as any);
+                          select.onchange(event);
                         } catch (err) {
                           // Silently handle onchange errors
                         }
