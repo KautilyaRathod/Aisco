@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/jpeg" href="/Angola Logo.png" />
+    <link rel="apple-touch-icon" href="/Angola Logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AISCO Homepage - AISCO – Angola Iron and Steel Corporation, LDA</title>
+    <meta name="description" content="AISCO – Angola Iron and Steel Corporation, LDA - Leading manufacturer of Grade A500 NR reinforcing steel bars with 30+ years of experience and cutting-edge European technology." />
+    <meta name="keywords" content="AISCO, Angola Steel, Reinforcing Steel Bars, Grade A500 NR, Construction Steel, Steel Manufacturing, AISCO Angola Iron Steel Corporation" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aisco.ao/" />
+    <meta property="og:title" content="AISCO – Angola Iron and Steel Corporation, LDA" />
+    <meta property="og:description" content="Leading manufacturer of Grade A500 NR reinforcing steel bars with cutting-edge European technology." />
+    <meta property="og:image" content="https://aisco.ao/Angola Logo.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://aisco.ao/" />
+    <meta property="twitter:title" content="AISCO – Angola Iron and Steel Corporation, LDA" />
+    <meta property="twitter:description" content="Leading manufacturer of Grade A500 NR reinforcing steel bars with cutting-edge European technology." />
+    <meta property="twitter:image" content="https://aisco.ao/Angola Logo.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Google Translate Element - Must be in body for initialization -->
+    <div id="google_translate_element" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+      // Initialize Google Translate element
+      function googleTranslateElementInit() {
+        if (window.google && window.google.translate) {
+          try {
+            const element = document.getElementById('google_translate_element');
+            if (element) {
+              // Clear any existing content to allow re-initialization
+              // This ensures language changes work on subsequent reloads
+              const existingCombo = element.querySelector('.goog-te-combo');
+              if (!existingCombo) {
+                // Initialize Google Translate element
+                new google.translate.TranslateElement({
+                  pageLanguage: 'en',
+                  includedLanguages: 'en,pt',
+                  layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                  autoDisplay: false
+                }, 'google_translate_element');
+              }
+              
+              // Apply saved language preference after initialization (smooth and error-free)
+              const applyLanguageFromCookie = function() {
+                try {
+                  // Check which language is selected from cookie
+                  const cookies = document.cookie.split(';');
+                  let targetLang = null;
+                  for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith('googtrans=')) {
+                      const value = cookie.substring('googtrans='.length);
+                      if (value && (value.includes('/pt') || value === '/en/pt')) {
+                        targetLang = 'pt';
+                        break;
+                      } else if (value && (value === '/en/en' || value === '/en')) {
+                        targetLang = 'en';
+                        break;
+                      }
+                    }
+                  }
+                  
+                  if (targetLang === 'pt') {
+                    // Safe function to apply translation
+                    const safeApplyTranslation = function() {
+                      try {
+                        const select = document.querySelector('.goog-te-combo');
+                        if (select) {
+                          // Only update if needed
+                          if (select.value !== 'pt') {
+                            select.value = 'pt';
+                            
+                            // Create and dispatch change event safely
+                            try {
+                              const event = new Event('change', { bubbles: true, cancelable: true });
+                              select.dispatchEvent(event);
+                              
+                              // Try Google Translate's internal handler safely
+                              if (typeof select.onchange === 'function') {
+                                try {
+                                  select.onchange(event);
+                                } catch (err) {
+                                  // Silently handle onchange errors
+                                }
+                              }
+                            } catch (err) {
+                              // Silently handle event errors
+                            }
+                          }
+                          return true; // Success
+                        }
+                      } catch (e) {
+                        // Silently handle all errors
+                      }
+                      return false; // Not ready yet
+                    };
+                    
+                    // Try to apply translation
+                    const applied = safeApplyTranslation();
+                    
+                    // If not applied, wait for select element with timeout
+                    if (!applied) {
+                      let attempts = 0;
+                      const maxAttempts = 50; // 5 seconds max
+                      const checkSelect = setInterval(function() {
+                        attempts++;
+                        const success = safeApplyTranslation();
+                        
+                        if (success || attempts >= maxAttempts) {
+                          clearInterval(checkSelect);
+                        }
+                      }, 100);
+                    }
+                  } else {
+                    // English selected - ensure it's set correctly
+                    const safeApplyTranslation = function() {
+                      try {
+                        const select = document.querySelector('.goog-te-combo');
+                        if (select && select.value !== 'en') {
+                          select.value = 'en';
+                          try {
+                            const event = new Event('change', { bubbles: true, cancelable: true });
+                            select.dispatchEvent(event);
+                            if (typeof select.onchange === 'function') {
+                              try {
+                                select.onchange(event as any);
+                              } catch (err) {
+                                // Silently handle
+                              }
+                            }
+                          } catch (err) {
+                            // Silently handle
+                          }
+                          return true;
+                        }
+                      } catch (e) {
+                        // Silently handle
+                      }
+                      return false;
+                    };
+                    
+                    // Try to set English with delays
+                    setTimeout(safeApplyTranslation, 500);
+                    setTimeout(safeApplyTranslation, 1500);
+                  }
+                } catch (e) {
+                  // Silently handle cookie reading errors
+                }
+              };
+              
+              // Apply translation with staggered delays for smooth flow
+              setTimeout(applyLanguageFromCookie, 1000);
+              setTimeout(applyLanguageFromCookie, 2000);
+              setTimeout(applyLanguageFromCookie, 3500);
+            }
+          } catch (e) {
+            console.error('Error initializing Google Translate:', e);
+          }
+        }
+      }
+      
+      // Ensure root element allows translation after React renders
+      window.addEventListener('DOMContentLoaded', function() {
+        const root = document.getElementById('root');
+        if (root) {
+          // Add a delay to let React render first, then allow full page translation
+          // Removing notranslate from root allows Google Translate to translate ALL content
+          // Individual elements with notranslate class (emails, addresses, language UI) will remain untranslated
+          setTimeout(() => {
+            root.classList.remove('notranslate');
+          }, 2000);
+        }
+      });
+
+      // Function to hide Google Translate UI elements
+      function hideGoogleTranslateUI() {
+        // Hide the top banner/bar
+        const banner = document.querySelector('.goog-te-banner-frame');
+        const skipTranslate = document.querySelector('.skiptranslate');
+        const bannerFrame = document.querySelector('body > .goog-te-banner-frame');
+        
+        if (banner) {
+          banner.style.display = 'none';
+          banner.style.visibility = 'hidden';
+          banner.style.height = '0';
+          banner.style.width = '0';
+          banner.style.overflow = 'hidden';
+          banner.style.position = 'absolute';
+          banner.style.top = '-9999px';
+        }
+        
+        if (skipTranslate) {
+          skipTranslate.style.display = 'none';
+          skipTranslate.style.visibility = 'hidden';
+          skipTranslate.style.height = '0';
+          skipTranslate.style.width = '0';
+          skipTranslate.style.overflow = 'hidden';
+        }
+        
+        if (bannerFrame) {
+          bannerFrame.style.display = 'none';
+          bannerFrame.style.visibility = 'hidden';
+          bannerFrame.style.height = '0';
+          bannerFrame.style.width = '0';
+        }
+
+        // Remove top margin/padding from body
+        document.body.style.top = '0';
+        document.body.style.marginTop = '0';
+        document.body.style.paddingTop = '0';
+        document.documentElement.style.marginTop = '0';
+        document.documentElement.style.paddingTop = '0';
+
+        // Hide hover tooltips and balloons
+        const tooltips = document.querySelectorAll('.goog-te-balloon-frame, .goog-te-balloon, .goog-tooltip, [class*="goog-tooltip"], [class*="goog-balloon"]');
+        tooltips.forEach(el => {
+          el.style.display = 'none';
+          el.style.visibility = 'hidden';
+          el.style.pointerEvents = 'none';
+        });
+      }
+
+      // Disable Google Translate hover interactions
+      function disableGoogleTranslateHover() {
+        // Remove hover event listeners that Google Translate might add
+        document.addEventListener('mouseover', function(e) {
+          const target = e.target;
+          if (target && (
+            target.classList.contains('goog-text-highlight') ||
+            target.closest('.goog-te-balloon-frame') ||
+            target.closest('.goog-tooltip') ||
+            target.getAttribute('data-gt-translate') !== null
+          )) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+        }, true);
+
+        // Prevent text highlighting on hover
+        document.addEventListener('mouseenter', function(e) {
+          const target = e.target;
+          if (target && target.classList.contains('goog-text-highlight')) {
+            target.classList.remove('goog-text-highlight');
+            target.style.backgroundColor = 'transparent';
+            target.style.background = 'transparent';
+          }
+        }, true);
+
+        // Hide any tooltips that appear
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1) { // Element node
+                if (node.classList && (
+                  node.classList.contains('goog-te-balloon-frame') ||
+                  node.classList.contains('goog-te-balloon') ||
+                  node.classList.contains('goog-tooltip') ||
+                  node.querySelector && (
+                    node.querySelector('.goog-te-balloon-frame') ||
+                    node.querySelector('.goog-te-balloon') ||
+                    node.querySelector('.goog-tooltip')
+                  )
+                )) {
+                  node.style.display = 'none';
+                  node.style.visibility = 'hidden';
+                  node.style.pointerEvents = 'none';
+                }
+              }
+            });
+          });
+        });
+
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      }
+
+      // Run immediately and continuously
+      hideGoogleTranslateUI();
+      disableGoogleTranslateHover();
+
+      // Run after page load
+      window.addEventListener('load', function() {
+        hideGoogleTranslateUI();
+        disableGoogleTranslateHover();
+      });
+
+      // Run periodically to catch any elements that appear later
+      setInterval(hideGoogleTranslateUI, 500);
+
+      // Run UI hiding after Google Translate initializes
+      // This is handled within googleTranslateElementInit function below
+    </script>
+    <script type="text/javascript">
+      // Smooth translation helper after page load (error-free)
+      // This ensures translation is applied on every page load/reload
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          try {
+            // Check current language from cookie
+            const cookies = document.cookie.split(';');
+            let targetLang = null;
+            for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.startsWith('googtrans=')) {
+                const value = cookie.substring('googtrans='.length);
+                if (value && (value.includes('/pt') || value === '/en/pt')) {
+                  targetLang = 'pt';
+                  break;
+                } else if (value && value.includes('/en/en')) {
+                  targetLang = 'en';
+                  break;
+                }
+              }
+            }
+            
+            if (targetLang) {
+              // Safe translation function that works for any language
+              const safeTranslate = function() {
+                try {
+                        const select = document.querySelector('.goog-te-combo');
+                        if (select && select.value !== targetLang) {
+                    select.value = targetLang;
+                    
+                    try {
+                      const event = new Event('change', { bubbles: true, cancelable: true });
+                      select.dispatchEvent(event);
+                      
+                      // Also try input event
+                      const inputEvent = new Event('input', { bubbles: true, cancelable: true });
+                      select.dispatchEvent(inputEvent);
+                      
+                      if (typeof select.onchange === 'function') {
+                        try {
+                          select.onchange(event as any);
+                        } catch (err) {
+                          // Silently handle onchange errors
+                        }
+                      }
+                      
+                      // Trigger Google Translate's internal change mechanism
+                      if (select.fireEvent) {
+                        try {
+                          select.fireEvent('onchange');
+                        } catch (err) {
+                          // Silently handle
+                        }
+                      }
+                    } catch (err) {
+                      // Silently handle event errors
+                    }
+                    
+                    return true;
+                  } else if (select && select.value === targetLang) {
+                    // Already set correctly
+                    return true;
+                  }
+                } catch (e) {
+                  // Silently handle all errors
+                }
+                return false;
+              };
+              
+              // Try translation with multiple attempts at different delays
+              // This ensures it works even if Google Translate loads slowly
+              const attempts = [500, 1000, 2000, 3000];
+              attempts.forEach(function(delay) {
+                setTimeout(function() {
+                  safeTranslate();
+                }, delay);
+              });
+            }
+          } catch (e) {
+            // Silently handle all errors
+          }
+        }, 1500);
+      });
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  </body>
+</html>

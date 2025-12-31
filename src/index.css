@@ -1,0 +1,457 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Animations */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotate-360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes steelGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(8, 144, 198, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(8, 144, 198, 0.6), 0 0 40px rgba(251, 146, 60, 0.3);
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.rotate-360 {
+  animation: rotate-360 1s ease-in-out;
+}
+
+.animate-steel-glow {
+  animation: steelGlow 2s ease-in-out infinite;
+}
+
+.animate-float-up {
+  animation: floatUp 4s ease-in-out infinite;
+}
+
+/* Typing Animation */
+.typing-animation {
+  overflow: hidden;
+  border-right: 2px solid #3b82f6;
+  white-space: nowrap;
+  animation: typing 3s steps(60, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: #3b82f6; }
+}
+
+/* Steel Texture */
+.steel-texture {
+  background-image: 
+    linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
+/* Fix for tooltip positioning */
+.tooltip-container {
+  position: relative;
+  z-index: 50;
+}
+
+.tooltip-content {
+  position: absolute;
+  z-index: 60;
+  pointer-events: none;
+}
+
+/* Ensure proper stacking context for hover elements */
+.hover-container {
+  position: relative;
+  z-index: 10;
+}
+
+.hover-container:hover {
+  z-index: 50;
+}
+
+/* Timeline line positioning fix */
+.timeline-container {
+  position: relative;
+  min-height: 400px;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.timeline-step {
+  position: relative;
+  z-index: 10;
+}
+
+.timeline-step:hover {
+  z-index: 50;
+}
+
+/* Loading animations */
+.loader-spin {
+  animation: spin 2s linear infinite;
+}
+
+.loader-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.loader-bounce {
+  animation: bounce 1s infinite;
+}
+
+/* Steel-themed loader effects */
+.steel-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Improved loading screen */
+.loading-gradient {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+}
+
+/* Enhanced button hover effects */
+.btn-steel {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-steel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-steel:hover::before {
+  left: 100%;
+}
+
+/* Google Translate Styles */
+/* Hide the default Google Translate banner but keep it functional */
+#google_translate_element {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Allow Google Translate combo to be accessed programmatically */
+#google_translate_element .goog-te-combo {
+  position: absolute !important;
+  left: -9999px !important;
+  opacity: 0 !important;
+}
+
+/* Hide the Google Translate top bar - comprehensive rules */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.skiptranslate,
+#google_translate_element ~ .skiptranslate,
+body > .skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+/* Remove top margin/padding added by Google Translate */
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+html {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Hide the Google Translate footer and hover tooltips */
+.goog-te-balloon-frame,
+.goog-te-balloon,
+.goog-te-menu-frame,
+.goog-te-menu-value,
+.goog-te-menu2,
+.goog-te-menu-frame,
+.goog-te-ftab,
+.goog-te-ftab-link,
+.goog-te-ftab-link img {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Disable Google Translate hover prompts and highlights */
+.goog-text-highlight,
+.goog-tooltip,
+.goog-tooltip-content,
+[class*="goog-tooltip"],
+[class*="goog-balloon"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Prevent text highlighting on hover from Google Translate - ONLY target Google Translate elements */
+.goog-text-highlight,
+.goog-text-highlight:hover,
+[class*="goog-text-highlight"],
+[class*="goog-text-highlight"]:hover,
+[class*="goog-te"],
+[class*="goog-te"]:hover {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: inherit !important;
+}
+
+/* Specifically target Google Translate highlight class */
+.goog-text-highlight {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/* Hide any Google Translate overlay elements */
+iframe[title*="translate"],
+iframe[src*="translate"],
+.goog-te-spinner-pos,
+.goog-te-gadget {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Prevent Google Translate from modifying React components during initial render */
+.notranslate {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Ensure React root is protected during initial render */
+#root.notranslate {
+  position: relative;
+}
+
+/* Allow translation after React has rendered */
+#root:not(.notranslate) {
+  /* Google Translate can now safely translate content */
+}
+
+/* Style the Google Translate select when it appears */
+.goog-te-combo {
+  margin: 0 !important;
+  padding: 4px 8px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  background-color: white !important;
+  color: #374151 !important;
+  font-size: 14px !important;
+}
+
+.goog-te-combo:hover {
+  border-color: #0890C6 !important;
+}
+
+/* Prevent Google Translate from wrapping React component text */
+.notranslate * {
+  pointer-events: auto;
+}
+
+/* Prevent top bar from changing color on hover */
+.bg-gray-800:hover,
+div.bg-gray-800:hover {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+  background: rgb(31 41 55) !important;
+}
+
+/* Language Modal - No hover effects, solid white background */
+.language-modal,
+.language-modal *,
+.language-modal:hover,
+.language-modal *:hover {
+  background-color: white !important;
+  background: white !important;
+}
+
+/* Language switcher selected option styling */
+.language-selected,
+.language-selected:hover,
+button.language-selected,
+button.language-selected:hover {
+  background-color: rgb(239 246 255) !important; /* blue-50 */
+  background: rgb(239 246 255) !important;
+  opacity: 1 !important;
+  color: black !important;
+}
+
+/* Disable all hover effects in language modal */
+.language-modal button.no-hover,
+.language-modal button.no-hover:hover,
+.language-modal .no-hover,
+.language-modal .no-hover:hover {
+  background-color: white !important;
+  background: white !important;
+}
+
+/* Ensure text is visible in language modal buttons - all black */
+.language-modal button {
+  color: black !important;
+}
+
+.language-modal button.language-selected {
+  color: black !important;
+  background-color: rgb(239 246 255) !important; /* blue-50 */
+}
+
+/* Ensure all text in language modal buttons is visible - prevent Google Translate interference */
+.language-modal button span.notranslate,
+.language-modal button .notranslate,
+.language-modal .notranslate {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+}
+
+.language-modal button.language-selected span.notranslate,
+.language-modal button.language-selected .notranslate {
+  color: black !important;
+}
+
+.language-modal button:not(.language-selected) span.notranslate,
+.language-modal button:not(.language-selected) .notranslate {
+  color: black !important;
+}
+
+/* Ensure unselected language options stay white */
+.language-modal button:not(.language-selected),
+.language-modal button:not(.language-selected):hover {
+  background-color: white !important;
+  background: white !important;
+}
+
+/* Close button no hover effect */
+.language-modal button[aria-label="Close"],
+.language-modal button[aria-label="Close"]:hover {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
