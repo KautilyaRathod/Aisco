@@ -69,7 +69,7 @@ const Header = () => {
                   alt="AISCO Logo" 
                   className="h-10 sm:h-12 lg:h-16 w-auto max-w-full object-contain"
                   loading="eager"
-                  fetchpriority="high"
+                  fetchPriority="high"
                 />
               </Link>
             </div>

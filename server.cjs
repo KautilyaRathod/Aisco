@@ -3,6 +3,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const path = require('path');
+const { sendQuoteRequestEmail, sendContactInquiryEmail } = require('./emailService.cjs');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -48,8 +49,14 @@ app.post('/api/quote', (req, res) => {
   const sql = `INSERT INTO quote_requests (fullName, companyName, countryCode, phoneNumber, whatsappCountryCode, whatsappNumber, emailAddress, projectLocation, productType, quantityRange, requiredDiameter, deliveryRequired, deliveryLocation, projectTimeline, message, agreeToTerms, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
   db.query(sql, [
     q.fullName, q.companyName, q.countryCode, q.phoneNumber, q.whatsappCountryCode, q.whatsappNumber, q.emailAddress, q.projectLocation, q.productType, q.quantityRange, Array.isArray(q.requiredDiameter) ? q.requiredDiameter.join(',') : '', q.deliveryRequired, q.deliveryLocation, q.projectTimeline, q.message, q.agreeToTerms
-  ], (err, result) => {
+  ], async (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
+    
+    // Send email notification (non-blocking - don't fail request if email fails)
+    sendQuoteRequestEmail(q).catch(emailErr => {
+      console.error('Failed to send quote request email:', emailErr);
+    });
+    
     res.json({ success: true, id: result.insertId });
   });
 });
@@ -60,8 +67,14 @@ app.post('/api/contact', (req, res) => {
   const sql = `INSERT INTO contact_inquiries (fullName, company, countryCode, phone, email, subject, message, agreeToPrivacy, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
   db.query(sql, [
     c.fullName, c.company, c.countryCode, c.phone, c.email, c.subject, c.message, c.agreeToPrivacy
-  ], (err, result) => {
+  ], async (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
+    
+    // Send email notification (non-blocking - don't fail request if email fails)
+    sendContactInquiryEmail(c).catch(emailErr => {
+      console.error('Failed to send contact inquiry email:', emailErr);
+    });
+    
     res.json({ success: true, id: result.insertId });
   });
 });
