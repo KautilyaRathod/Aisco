@@ -1,12 +1,21 @@
 const nodemailer = require('nodemailer');
 
-// Create reusable transporter object using Gmail SMTP
+// Create reusable transporter object using SMTP
 const createTransporter = () => {
+  const port = parseInt(process.env.SMTP_PORT) || 465;
+  const secure = process.env.SMTP_SECURE === 'true' || port === 465;
+  
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: process.env.SMTP_HOST,
+    port: port,
+    secure: secure, // true for 465, false for other ports (STARTTLS)
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASSWORD
+    },
+    // For port 587 (STARTTLS), ensure TLS is enabled
+    tls: {
+      rejectUnauthorized: false // Allow self-signed certificates if needed
     }
   });
 };
@@ -85,19 +94,19 @@ const formatContactInquiryEmail = (formData) => {
 const sendQuoteRequestEmail = async (formData) => {
   try {
     // Check if email credentials are configured
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_HOST) {
       console.warn('Email credentials not configured. Skipping email send.');
       return { success: false, error: 'Email credentials not configured' };
     }
 
     const transporter = createTransporter();
-    // Use GMAIL_RECIPIENT if set, otherwise default to GMAIL_USER
-    const recipientEmail = process.env.GMAIL_RECIPIENT || process.env.GMAIL_USER;
+    // Use SMTP_RECIPIENT if set, otherwise default to SMTP_USER
+    const recipientEmail = process.env.SMTP_RECIPIENT || process.env.SMTP_USER;
 
     const mailOptions = {
-      from: `"AISCO Website" <${process.env.GMAIL_USER}>`,
+      from: `"AISCO Website" <${process.env.SMTP_USER}>`,
       to: recipientEmail,
-      replyTo: formData.emailAddress || process.env.GMAIL_USER,
+      replyTo: formData.emailAddress || process.env.SMTP_USER,
       subject: `New Quote Request from ${formData.fullName || 'Customer'}`,
       html: formatQuoteRequestEmail(formData)
     };
@@ -115,19 +124,19 @@ const sendQuoteRequestEmail = async (formData) => {
 const sendContactInquiryEmail = async (formData) => {
   try {
     // Check if email credentials are configured
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_HOST) {
       console.warn('Email credentials not configured. Skipping email send.');
       return { success: false, error: 'Email credentials not configured' };
     }
 
     const transporter = createTransporter();
-    // Use GMAIL_RECIPIENT if set, otherwise default to GMAIL_USER
-    const recipientEmail = process.env.GMAIL_RECIPIENT || process.env.GMAIL_USER;
+    // Use SMTP_RECIPIENT if set, otherwise default to SMTP_USER
+    const recipientEmail = process.env.SMTP_RECIPIENT || process.env.SMTP_USER;
 
     const mailOptions = {
-      from: `"AISCO Website" <${process.env.GMAIL_USER}>`,
+      from: `"AISCO Website" <${process.env.SMTP_USER}>`,
       to: recipientEmail,
-      replyTo: formData.email || process.env.GMAIL_USER,
+      replyTo: formData.email || process.env.SMTP_USER,
       subject: `New Quick Inquiry: ${formData.subject || 'No Subject'}`,
       html: formatContactInquiryEmail(formData)
     };

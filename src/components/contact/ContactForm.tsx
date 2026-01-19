@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle, User, Building, Phone, Mail, MessageSquare, ChevronDown } from 'lucide-react';
+import { Send, CheckCircle, User, Building, Phone, Mail, MessageSquare, ChevronDown, MessageCircle } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
 // Wire up to backend API
 // In production with nginx proxy, use relative path (empty string)
 // In development, use full URL or let vite proxy handle it
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 
   (import.meta.env.PROD ? '' : 'http://localhost:4000');
+
+// WhatsApp number for contact
+const WHATSAPP_NUMBER = '244931977848';
 
 const ContactForm = () => {
   const [ref, isInView] = useInView({ threshold: 0.3 });
@@ -70,6 +73,32 @@ const ContactForm = () => {
       ...formData,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     });
+  };
+
+  const handleWhatsAppClick = () => {
+    const subjectLabel = subjectOptions.find(s => s.value === formData.subject)?.label || formData.subject;
+    
+    const message = `Hello AISCO Team,
+
+I have a quick inquiry. Here are my details:
+
+*Contact Information:*
+• Name: ${formData.fullName || 'Not provided'}
+${formData.company ? `• Company: ${formData.company}` : ''}
+• Phone: ${formData.countryCode} ${formData.phone || 'Not provided'}
+• Email: ${formData.email || 'Not provided'}
+
+*Inquiry Details:*
+• Subject: ${subjectLabel}
+
+*Message:*
+${formData.message || 'Not provided'}
+
+Please get back to me at your earliest convenience. Thank you!`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   const subjectOptions = [
@@ -333,25 +362,39 @@ const ContactForm = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
-            <div className="text-center pt-4">
-              <button
-                type="submit"
-                disabled={!formData.agreeToPrivacy || isSubmitting}
-                className="group bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-12 py-4 rounded-lg font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center space-x-3"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                    <span>Sending...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send size={24} className="group-hover:translate-x-1 transition-transform" />
-                    <span>Send Message</span>
-                  </>
-                )}
-              </button>
+            {/* Submit Buttons */}
+            <div className="text-center pt-4 space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button
+                  type="submit"
+                  disabled={!formData.agreeToPrivacy || isSubmitting}
+                  className="group bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-12 py-4 rounded-lg font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center space-x-3"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={24} className="group-hover:translate-x-1 transition-transform" />
+                      <span>Send Message</span>
+                    </>
+                  )}
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={handleWhatsAppClick}
+                  className="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-10 py-4 rounded-lg font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl inline-flex items-center space-x-3"
+                >
+                  <MessageCircle size={24} className="group-hover:scale-110 transition-transform" />
+                  <span>Contact via WhatsApp</span>
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                Or contact us directly via WhatsApp for instant assistance
+              </p>
             </div>
           </form>
         </div>

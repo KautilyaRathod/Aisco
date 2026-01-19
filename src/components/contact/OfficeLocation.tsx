@@ -122,10 +122,12 @@ const OfficeLocation = () => {
                   }`}
                   style={{ transitionDelay: `${index * 150 + 600}ms` }}
                 >
+                  
                   <div className="flex items-start space-x-4">
                     <div className="bg-blue-600 text-white p-3 rounded-lg group-hover:scale-110 transition-transform duration-500">
                       {contact.icon}
                     </div>
+                    
                     <div className="flex-1">
                       <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors">
                         {contact.title}
@@ -188,6 +190,18 @@ const OfficeLocation = () => {
                 international visitors and cargo operations.
               </p>
             </div>
+          </div>
+          {/* Address QR Code Section */}
+          <div className="mt-12 flex flex-col items-center border-t border-gray-100 pt-10">
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">Scan for Location</h4>
+            <div className="p-3 bg-white rounded-xl shadow-md border border-gray-100 hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/Address QR.png" 
+                alt="AISCO Office Location QR Code" 
+                className="w-32 h-32 md:w-40 md:h-40 object-contain"
+              />
+            </div>
+            <p className="mt-3 text-sm text-gray-500">Scan to open in Google Maps</p>
           </div>
         </div>
       </div>

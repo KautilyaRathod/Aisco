@@ -7,6 +7,9 @@ import { useInView } from '../../hooks/useInView';
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 
   (import.meta.env.PROD ? '' : 'http://localhost:4000');
 
+// WhatsApp number for contact
+const WHATSAPP_NUMBER = '244931977848';
+
 const QuoteForm = () => {
   const [ref, isInView] = useInView({ threshold: 0.3 });
   const [formData, setFormData] = useState({
@@ -102,6 +105,42 @@ const QuoteForm = () => {
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleWhatsAppClick = () => {
+    const productTypeLabel = productTypes.find(p => p.value === formData.productType)?.label || formData.productType;
+    const quantityLabel = quantityRanges.find(q => q.value === formData.quantityRange)?.label || formData.quantityRange;
+    const timelineLabel = timelines.find(t => t.value === formData.projectTimeline)?.label || formData.projectTimeline;
+    
+    const message = `Hello AISCO Team,
+
+I'm interested in requesting a quote. Here are my details:
+
+*Contact Information:*
+• Name: ${formData.fullName || 'Not provided'}
+• Company: ${formData.companyName || 'Not provided'}
+• Phone: ${formData.countryCode} ${formData.phoneNumber || 'Not provided'}
+• Email: ${formData.emailAddress || 'Not provided'}
+${formData.whatsappNumber ? `• WhatsApp: ${formData.whatsappCountryCode} ${formData.whatsappNumber}` : ''}
+
+*Project Details:*
+• Location: ${formData.projectLocation || 'Not provided'}
+• Timeline: ${timelineLabel}
+
+*Product Specifications:*
+• Product Type: ${productTypeLabel}
+• Quantity Range: ${quantityLabel}
+• Required Diameter: ${formData.requiredDiameter.length > 0 ? formData.requiredDiameter.join(', ') : 'Not specified'}
+• Delivery Required: ${formData.deliveryRequired === true || formData.deliveryRequired === 'yes' ? 'Yes' : 'No'}
+${(formData.deliveryRequired === true || formData.deliveryRequired === 'yes') && formData.deliveryLocation ? `• Delivery Location: ${formData.deliveryLocation}` : ''}
+
+${formData.message ? `*Additional Notes:*\n${formData.message}` : ''}
+
+Please provide me with a quote. Thank you!`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   const productTypes = [
@@ -585,25 +624,39 @@ const QuoteForm = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
-            <div className="text-center pt-6">
-              <button
-                type="submit"
-                disabled={!formData.agreeToTerms || isSubmitting}
-                className="group bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-16 py-5 rounded-xl font-bold text-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center space-x-4"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-white"></div>
-                    <span>Submitting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send size={28} className="group-hover:translate-x-1 transition-transform" />
-                    <span>Submit Quote Request</span>
-                  </>
-                )}
-              </button>
+            {/* Submit Buttons */}
+            <div className="text-center pt-6 space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button
+                  type="submit"
+                  disabled={!formData.agreeToTerms || isSubmitting}
+                  className="group bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-16 py-5 rounded-xl font-bold text-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:hover:scale-100 inline-flex items-center space-x-4"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-white"></div>
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={28} className="group-hover:translate-x-1 transition-transform" />
+                      <span>Submit Quote Request</span>
+                    </>
+                  )}
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={handleWhatsAppClick}
+                  className="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-12 py-5 rounded-xl font-bold text-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl inline-flex items-center space-x-4"
+                >
+                  <MessageCircle size={28} className="group-hover:scale-110 transition-transform" />
+                  <span>Contact via WhatsApp</span>
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                Or contact us directly via WhatsApp for instant assistance
+              </p>
             </div>
           </form>
         </div>
