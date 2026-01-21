@@ -106,6 +106,39 @@ app.post('/api/inquiry', (req, res) => {
   });
 });
 
+// Test Email endpoint (no DB write, just sends a test email)
+app.post('/api/test-email', async (req, res) => {
+  try {
+    const { toEmail, subject, message } = req.body || {};
+
+    // Build a minimal formData object compatible with sendContactInquiryEmail
+    const formData = {
+      fullName: 'Test User',
+      company: 'AISCO Test',
+      countryCode: '',
+      phone: '',
+      email: toEmail || process.env.SMTP_RECIPIENT || process.env.SMTP_USER,
+      subject: subject || 'AISCO Test Email from API',
+      message: message || 'This is a test email sent via the /api/test-email endpoint.'
+    };
+
+    const result = await sendContactInquiryEmail(formData);
+
+    if (!result.success) {
+      return res.status(500).json({ success: false, error: result.error || 'Failed to send test email' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Test email sent successfully',
+      messageId: result.messageId
+    });
+  } catch (error) {
+    console.error('Error in /api/test-email:', error);
+    res.status(500).json({ success: false, error: error.message || 'Internal server error' });
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
