@@ -5,6 +5,13 @@ const createTransporter = () => {
   const port = parseInt(process.env.SMTP_PORT) || 465;
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
   
+  console.log(`   🔧 Creating SMTP transporter...`);
+  console.log(`      Host: ${process.env.SMTP_HOST}`);
+  console.log(`      Port: ${port}`);
+  console.log(`      Secure: ${secure} (${secure ? 'SSL' : 'STARTTLS'})`);
+  console.log(`      User: ${process.env.SMTP_USER}`);
+  console.log(`      Password: ${process.env.SMTP_PASSWORD ? '***configured***' : 'NOT SET'}`);
+  
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: port,
@@ -16,7 +23,10 @@ const createTransporter = () => {
     // For port 587 (STARTTLS), ensure TLS is enabled
     tls: {
       rejectUnauthorized: false // Allow self-signed certificates if needed
-    }
+    },
+    // Enable debug logging
+    debug: true,
+    logger: true
   });
 };
 
@@ -92,14 +102,27 @@ const formatContactInquiryEmail = (formData) => {
 
 // Send email for Quote Request
 const sendQuoteRequestEmail = async (formData) => {
+  console.log(`\n📧 ========== EMAIL SERVICE: SENDING QUOTE REQUEST ==========`);
+  const startTime = Date.now();
+  
   try {
     // Check if email credentials are configured
     if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_HOST) {
-      console.warn('Email credentials not configured. Skipping email send.');
+      console.warn('❌ Email credentials not configured. Skipping email send.');
       return { success: false, error: 'Email credentials not configured' };
     }
 
     const transporter = createTransporter();
+    
+    // Verify connection first
+    try {
+      await transporter.verify();
+      console.log(`   ✅ SMTP connection verified`);
+    } catch (verifyError) {
+      console.error(`   ❌ SMTP verification failed: ${verifyError.message}`);
+      throw verifyError;
+    }
+    
     // Use SMTP_RECIPIENT if set, otherwise default to SMTP_USER
     const recipientEmail = process.env.SMTP_RECIPIENT || process.env.SMTP_USER;
 
@@ -111,28 +134,55 @@ const sendQuoteRequestEmail = async (formData) => {
       html: formatQuoteRequestEmail(formData)
     };
 
+    console.log(`   Sending to: ${recipientEmail}`);
     const info = await transporter.sendMail(mailOptions);
-    console.log('Quote request email sent:', info.messageId);
+    const duration = Date.now() - startTime;
+    
+    console.log(`✅ Quote request email sent in ${duration}ms - Message ID: ${info.messageId}`);
+    console.log(`===============================================\n`);
+    
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending quote request email:', error);
+    const duration = Date.now() - startTime;
+    console.error(`❌ Error sending quote request email after ${duration}ms: ${error.message}`);
+    console.log(`===============================================\n`);
     return { success: false, error: error.message };
   }
 };
 
 // Send email for Contact/Quick Inquiry
 const sendContactInquiryEmail = async (formData) => {
+  console.log(`\n📧 ========== EMAIL SERVICE: SENDING EMAIL ==========`);
+  const startTime = Date.now();
+  
   try {
     // Check if email credentials are configured
     if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_HOST) {
-      console.warn('Email credentials not configured. Skipping email send.');
+      console.warn('❌ Email credentials not configured. Skipping email send.');
+      console.log(`   Missing: ${!process.env.SMTP_HOST ? 'SMTP_HOST ' : ''}${!process.env.SMTP_USER ? 'SMTP_USER ' : ''}${!process.env.SMTP_PASSWORD ? 'SMTP_PASSWORD' : ''}`);
       return { success: false, error: 'Email credentials not configured' };
     }
 
+    console.log(`\n🔌 Step 1: Creating SMTP transporter...`);
     const transporter = createTransporter();
-    // Use SMTP_RECIPIENT if set, otherwise default to SMTP_USER
-    const recipientEmail = process.env.SMTP_RECIPIENT || process.env.SMTP_USER;
-
+    
+    console.log(`\n🔍 Step 2: Verifying SMTP connection...`);
+    try {
+      await transporter.verify();
+      console.log(`   ✅ SMTP connection verified successfully!`);
+    } catch (verifyError) {
+      console.error(`   ❌ SMTP verification FAILED:`);
+      console.error(`      Error: ${verifyError.message}`);
+      if (verifyError.code) {
+        console.error(`      Error Code: ${verifyError.code}`);
+      }
+      throw verifyError;
+    }
+    
+    // Use SMTP_RECIPIENT if set, otherwise use formData.email or default to SMTP_USER
+    const recipientEmail = formData.email || process.env.SMTP_RECIPIENT || process.env.SMTP_USER;
+    
+    console.log(`\n📝 Step 3: Preparing email message...`);
     const mailOptions = {
       from: `"AISCO Website" <${process.env.SMTP_USER}>`,
       to: recipientEmail,
@@ -140,12 +190,49 @@ const sendContactInquiryEmail = async (formData) => {
       subject: `New Quick Inquiry: ${formData.subject || 'No Subject'}`,
       html: formatContactInquiryEmail(formData)
     };
-
+    
+    console.log(`   From: ${mailOptions.from}`);
+    console.log(`   To: ${mailOptions.to}`);
+    console.log(`   Reply-To: ${mailOptions.replyTo}`);
+    console.log(`   Subject: ${mailOptions.subject}`);
+    
+    console.log(`\n📤 Step 4: Sending email via SMTP server...`);
+    const sendStartTime = Date.now();
     const info = await transporter.sendMail(mailOptions);
-    console.log('Contact inquiry email sent:', info.messageId);
+    const sendDuration = Date.now() - sendStartTime;
+    
+    const totalDuration = Date.now() - startTime;
+    console.log(`\n✅ EMAIL SENT SUCCESSFULLY!`);
+    console.log(`   Message ID: ${info.messageId || 'N/A'}`);
+    console.log(`   Response: ${info.response || 'N/A'}`);
+    console.log(`   Accepted: ${info.accepted ? info.accepted.join(', ') : 'N/A'}`);
+    console.log(`   Rejected: ${info.rejected ? info.rejected.join(', ') : 'None'}`);
+    console.log(`   Send Duration: ${sendDuration}ms`);
+    console.log(`   Total Duration: ${totalDuration}ms`);
+    console.log(`===============================================\n`);
+    
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending contact inquiry email:', error);
+    const totalDuration = Date.now() - startTime;
+    console.error(`\n❌ EMAIL SENDING FAILED after ${totalDuration}ms`);
+    console.error(`   Error Type: ${error.constructor.name}`);
+    console.error(`   Error Message: ${error.message}`);
+    if (error.code) {
+      console.error(`   Error Code: ${error.code}`);
+    }
+    if (error.command) {
+      console.error(`   Failed Command: ${error.command}`);
+    }
+    if (error.response) {
+      console.error(`   SMTP Response: ${error.response}`);
+    }
+    if (error.responseCode) {
+      console.error(`   SMTP Response Code: ${error.responseCode}`);
+    }
+    if (error.stack) {
+      console.error(`   Stack Trace:\n${error.stack}`);
+    }
+    console.log(`===============================================\n`);
     return { success: false, error: error.message };
   }
 };
