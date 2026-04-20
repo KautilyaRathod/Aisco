@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Jan 05, 2026 at 01:56 PM
--- Server version: 8.0.39
--- PHP Version: 8.0.30
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -26,9 +17,10 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `contact_inquiries`
 --
+-- Database: `aisco`
 
 CREATE TABLE `contact_inquiries` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `fullName` varchar(150) NOT NULL,
   `company` varchar(150) DEFAULT NULL,
   `countryCode` varchar(8) NOT NULL,
@@ -37,8 +29,15 @@ CREATE TABLE `contact_inquiries` (
   `subject` varchar(60) NOT NULL,
   `message` text NOT NULL,
   `agreeToPrivacy` tinyint(1) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_email` (`email`),
+  KEY `idx_createdAt` (`createdAt`)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+
 
 --
 -- Dumping data for table `contact_inquiries`
@@ -55,8 +54,10 @@ INSERT INTO `contact_inquiries` (`id`, `fullName`, `company`, `countryCode`, `ph
 -- Table structure for table `quote_requests`
 --
 
+DROP TABLE IF EXISTS `quote_requests`;
+
 CREATE TABLE `quote_requests` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `fullName` varchar(150) NOT NULL,
   `companyName` varchar(150) NOT NULL,
   `countryCode` varchar(8) NOT NULL,
@@ -73,8 +74,13 @@ CREATE TABLE `quote_requests` (
   `projectTimeline` varchar(50) NOT NULL,
   `message` text,
   `agreeToTerms` tinyint(1) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_emailAddress` (`emailAddress`),
+  KEY `idx_createdAt` (`createdAt`)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `quote_requests`

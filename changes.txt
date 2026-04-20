@@ -1,0 +1,14 @@
+1]SQl changes- start mai jo bhi prompts hai cursor chat mai woh sql file ko leke hai , jo already edit krke hi attach kiya hu , toh woh waale chat ignore kr 
+
+2]Cursor ne  thode boht changes kiye hai jo chat mai hai , thoda study krega na last last mai pata chal jaayega 
+ 
+3]iss file mai C:\xampp\apache\conf\httpd.conf
+last mai yeh daal de 
+
+Alias /api "D:/Workability/AISCO/AISCO/api/public"
+
+<Directory "D:/Workability/AISCO/AISCO/api/public">
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
