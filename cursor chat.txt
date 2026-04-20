@@ -1,0 +1,821 @@
+---- Database: `aisco`---- ------------------------------------------------------------ Table structure for table `contact_inquiries`---- Database: `aisco`CREATE TABLE `contact_inquiries` (  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,  `fullName` varchar(150) NOT NULL,  `company` varchar(150) DEFAULT NULL,  `countryCode` varchar(8) NOT NULL,  `phone` varchar(32) NOT NULL,  `email` varchar(200) NOT NULL,  `subject` varchar(60) NOT NULL,  `message` text NOT NULL,  `agreeToPrivacy` tinyint(1) NOT NULL,  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY (`id`),  KEY `idx_email` (`email`),  KEY `idx_createdAt` (`createdAt`)) ENGINE=InnoDBDEFAULT CHARSET=utf8mb4COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+Solve this error 
+
+The SQL you pasted is malformed and may use a collation your DB doesn’t support.
+
+Most likely issues:
+
+---- Database... text is being executed as SQL.
+Missing spaces in ) ENGINE=InnoDBDEFAULT CHARSET...
+utf8mb4_0900_ai_ci works on MySQL 8, but fails on MariaDB / older MySQL.
+Use this cleaned version:
+
+CREATE TABLE `contact_inquiries` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fullName` varchar(150) NOT NULL,
+  `company` varchar(150) DEFAULT NULL,
+  `countryCode` varchar(8) NOT NULL,
+  `phone` varchar(32) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `subject` varchar(60) NOT NULL,
+  `message` text NOT NULL,
+  `agreeToPrivacy` tinyint(1) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_email` (`email`),
+  KEY `idx_createdAt` (`createdAt`)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+If you are definitely on MySQL 8, you can switch collation back to utf8mb4_0900_ai_ci.
+
+If it still errors, paste the exact MySQL error message (code + text), and I’ll pinpoint it immediately.
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+
+START TRANSACTION;
+
+SET time_zone = "+00:00";
+
+
+
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+
+/*!40101 SET NAMES utf8mb4 */;
+
+
+
+--
+
+-- Database: `aisco`
+
+--
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+
+-- Table structure for table `contact_inquiries`
+
+--
+
+-- Database: `aisco`
+
+
+
+CREATE TABLE `contact_inquiries` (
+
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+
+  `fullName` varchar(150) NOT NULL,
+
+  `company` varchar(150) DEFAULT NULL,
+
+  `countryCode` varchar(8) NOT NULL,
+
+  `phone` varchar(32) NOT NULL,
+
+  `email` varchar(200) NOT NULL,
+
+  `subject` varchar(60) NOT NULL,
+
+  `message` text NOT NULL,
+
+  `agreeToPrivacy` tinyint(1) NOT NULL,
+
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (`id`),
+
+  KEY `idx_email` (`email`),
+
+  KEY `idx_createdAt` (`createdAt`)
+
+) ENGINE=InnoDB
+
+DEFAULT CHARSET=utf8mb4
+
+COLLATE=utf8mb4_unicode_ci;
+
+
+
+
+
+
+
+--
+
+-- Dumping data for table `contact_inquiries`
+
+--
+
+
+
+INSERT INTO `contact_inquiries` (`id`, `fullName`, `company`, `countryCode`, `phone`, `email`, `subject`, `message`, `agreeToPrivacy`, `createdAt`) VALUES
+
+(1, 'test', 'test', '+91', '6351729056', 'test@gmail.com', 'partnerships', 'test', 1, '2025-10-30 10:33:48'),
+
+(2, 'Manav', 'test', '+91', '6351729056', 'hdhhdf@hdjd.ufhfur', 'sales', 'rfvwaar', 1, '2025-11-06 09:30:13'),
+
+(3, 'Manav Naik', 'test', '+91', '6351729056', 'manavnaik@gmail.com', 'general', 'online E mail testing', 1, '2026-01-05 11:12:41');
+
+
+
+-- --------------------------------------------------------
+
+
+
+--
+
+-- Table structure for table `quote_requests`
+
+--
+
+
+
+CREATE TABLE `quote_requests` (
+
+  `id` int UNSIGNED NOT NULL,
+
+  `fullName` varchar(150) NOT NULL,
+
+  `companyName` varchar(150) NOT NULL,
+
+  `countryCode` varchar(8) NOT NULL,
+
+  `phoneNumber` varchar(32) NOT NULL,
+
+  `whatsappCountryCode` varchar(8) DEFAULT NULL,
+
+  `whatsappNumber` varchar(32) DEFAULT NULL,
+
+  `emailAddress` varchar(200) NOT NULL,
+
+  `projectLocation` varchar(200) NOT NULL,
+
+  `productType` varchar(50) NOT NULL,
+
+  `quantityRange` varchar(50) NOT NULL,
+
+  `requiredDiameter` varchar(255) NOT NULL,
+
+  `deliveryRequired` tinyint(1) NOT NULL,
+
+  `deliveryLocation` varchar(255) DEFAULT NULL,
+
+  `projectTimeline` varchar(50) NOT NULL,
+
+  `message` text,
+
+  `agreeToTerms` tinyint(1) NOT NULL,
+
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+--
+
+-- Dumping data for table `quote_requests`
+
+--
+
+
+
+INSERT INTO `quote_requests` (`id`, `fullName`, `companyName`, `countryCode`, `phoneNumber`, `whatsappCountryCode`, `whatsappNumber`, `emailAddress`, `projectLocation`, `productType`, `quantityRange`, `requiredDiameter`, `deliveryRequired`, `deliveryLocation`, `projectTimeline`, `message`, `agreeToTerms`, `createdAt`) VALUES
+
+(1, 'test', 'test', '+91', '1234567890', '+91', '1234567890', 'kivewi5944@lovleo.com', 'mumbai', 'rebar', 'medium', '16mm', 0, '', 'quarter', 'test', 1, '2025-10-30 10:37:29'),
+
+(2, 'test', 'test', '', '6351729056', NULL, NULL, 'test@gmail.com', 'test', 'commercial', '1', '8mm', 0, 'test', 'immediate', 'test', 1, '2025-10-30 10:40:43'),
+
+(3, 'Online test', 'Online test', '+91', '1234567890', '+91', '1234567890', 'kivewi5944@lovleo.com', 'mumbai', 'billets', 'medium', '20mm,16mm,12mm,10mm', 0, '', 'immediate', 'zqwcrtfvgbyuhnjimk,op', 1, '2026-01-05 11:14:56'),
+
+(4, 'Manav', 'test', '+91', '1234567890', '+91', '1234567890', 'kivewi5944@lovleo.com', 'mumbai', 'rebar', 'medium', '10mm', 0, '', 'month', 'Manav Naik', 1, '2026-01-05 11:16:54');
+
+
+
+--
+
+-- Indexes for dumped tables
+
+--
+
+
+
+--
+
+-- Indexes for table `contact_inquiries`
+
+--
+
+ALTER TABLE `contact_inquiries`
+
+  ADD PRIMARY KEY (`id`),
+
+  ADD KEY `idx_email` (`email`),
+
+  ADD KEY `idx_createdAt` (`createdAt`);
+
+
+
+--
+
+-- Indexes for table `quote_requests`
+
+--
+
+ALTER TABLE `quote_requests`
+
+  ADD PRIMARY KEY (`id`),
+
+  ADD KEY `idx_emailAddress` (`emailAddress`),
+
+  ADD KEY `idx_createdAt` (`createdAt`);
+
+
+
+--
+
+-- AUTO_INCREMENT for dumped tables
+
+--
+
+
+
+--
+
+-- AUTO_INCREMENT for table `contact_inquiries`
+
+--
+
+ALTER TABLE `contact_inquiries`
+
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+
+
+--
+
+-- AUTO_INCREMENT for table `quote_requests`
+
+--
+
+ALTER TABLE `quote_requests`
+
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+COMMIT;
+
+
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+
+
+this is my code of sql   and below is the error 
+
+-- ------------------------------------------------------------ Table structure for table `quote_requests`--CREATE TABLE `quote_requests` (  `id` int UNSIGNED NOT NULL,  `fullName` varchar(150) NOT NULL,  `companyName` varchar(150) NOT NULL,  `countryCode` varchar(8) NOT NULL,  `phoneNumber` varchar(32) NOT NULL,  `whatsappCountryCode` varchar(8) DEFAULT NULL,  `whatsappNumber` varchar(32) DEFAULT NULL,  `emailAddress` varchar(200) NOT NULL,  `projectLocation` varchar(200) NOT NULL,  `productType` varchar(50) NOT NULL,  `quantityRange` varchar(50) NOT NULL,  `requiredDiameter` varchar(255) NOT NULL,  `deliveryRequired` tinyint(1) NOT NULL,  `deliveryLocation` varchar(255) DEFAULT NULL,  `projectTimeline` varchar(50) NOT NULL,  `message` text,  `agreeToTerms` tinyint(1) NOT NULL,  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+Your SQL is mostly fine, but the import fails because of dump formatting + conflicting table definition steps.
+
+What’s going wrong
+In the error snippet, comments and SQL are merged into one line:
+-- ... Table structure ... --CREATE TABLE ...
+That can break parsing in some tools.
+quote_requests is created with id as NOT NULL (no AUTO_INCREMENT), then later altered to add PK and auto_increment. This is valid in some dumps, but can fail depending on import context/order.
+COLLATE=utf8mb4_0900_ai_ci fails on MariaDB / older MySQL.
+Use this fixed quote_requests block (single-step, safe)
+DROP TABLE IF EXISTS `quote_requests`;
+CREATE TABLE `quote_requests` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fullName` varchar(150) NOT NULL,
+  `companyName` varchar(150) NOT NULL,
+  `countryCode` varchar(8) NOT NULL,
+  `phoneNumber` varchar(32) NOT NULL,
+  `whatsappCountryCode` varchar(8) DEFAULT NULL,
+  `whatsappNumber` varchar(32) DEFAULT NULL,
+  `emailAddress` varchar(200) NOT NULL,
+  `projectLocation` varchar(200) NOT NULL,
+  `productType` varchar(50) NOT NULL,
+  `quantityRange` varchar(50) NOT NULL,
+  `requiredDiameter` varchar(255) NOT NULL,
+  `deliveryRequired` tinyint(1) NOT NULL,
+  `deliveryLocation` varchar(255) DEFAULT NULL,
+  `projectTimeline` varchar(50) NOT NULL,
+  `message` text,
+  `agreeToTerms` tinyint(1) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_emailAddress` (`emailAddress`),
+  KEY `idx_createdAt` (`createdAt`)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+Then run your INSERT INTO quote_requests ... statements.
+
+Important cleanup in your full script
+Remove the later duplicate:
+ALTER TABLE quote_requests ADD PRIMARY KEY...
+ALTER TABLE quote_requests MODIFY id ... AUTO_INCREMENT...
+Keep proper newlines after every -- comment.
+If you are definitely on MySQL 8, you can use utf8mb4_0900_ai_ci; otherwise keep utf8mb4_unicode_ci.
+If you want, I can rewrite your entire SQL file into a clean import-ready version (contact + quote tables) in one paste.
+
+---- Database: `aisco`---- ------------------------------------------------------------ Table structure for table `contact_inquiries`---- Database: `aisco`CREATE TABLE `contact_inquiries` (  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,  `fullName` varchar(150) NOT NULL,  `company` varchar(150) DEFAULT NULL,  `countryCode` varchar(8) NOT NULL,  `phone` varchar(32) NOT NULL,  `email` varchar(200) NOT NULL,  `subject` varchar(60) NOT NULL,  `message` text NOT NULL,  `agreeToPrivacy` tinyint(1) NOT NULL,  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  PRIMARY KEY (`id`),  KEY `idx_email` (`email`),  KEY `idx_createdAt` (`createdAt`)) ENGINE=InnoDBDEFAULT CHARSET=utf8mb4COLLATE=utf8mb4_unicode_ci;
+
+Use this corrected statement (your current one is missing spaces/newlines around ENGINE, CHARSET, and COLLATE, and has non-SQL header text mixed in):
+
+CREATE TABLE `contact_inquiries` (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fullName` varchar(150) NOT NULL,
+  `company` varchar(150) DEFAULT NULL,
+  `countryCode` varchar(8) NOT NULL,
+  `phone` varchar(32) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `subject` varchar(60) NOT NULL,
+  `message` text NOT NULL,
+  `agreeToPrivacy` tinyint(1) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_email` (`email`),
+  KEY `idx_createdAt` (`createdAt`)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+Also remove this from execution input:
+
+---- Database: ...
+Those are not valid SQL comments. Use -- Database: aisco if needed.
+---- Indexes for dumped tables------ Indexes for table `contact_inquiries`--ALTER TABLE `contact_inquiries`  ADD PRIMARY KEY (`id`),  ADD KEY `idx_email` (`email`),  ADD KEY `idx_createdAt` (`createdAt`);
+
+That line has the same formatting problem: invalid header text is glued to SQL.
+
+Use this valid SQL:
+
+-- Indexes for table `contact_inquiries`
+ALTER TABLE `contact_inquiries`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_email` (`email`),
+  ADD KEY `idx_createdAt` (`createdAt`);
+Important:
+
+Only run this if the table was created without primary key/indexes.
+In your earlier CREATE TABLE, indexes are already defined, so running this again will cause duplicate key/index errors.
+In that case, skip this ALTER TABLE.
+---- Indexes for dumped tables------ Indexes for table `contact_inquiries`--ALTER TABLE `contact_inquiries`  ADD PRIMARY KEY (`id`),  ADD KEY `idx_email` (`email`),  ADD KEY `idx_createdAt` (`createdAt`);
+
+-- Indexes for table `contact_inquiries`
+ALTER TABLE `contact_inquiries`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_email` (`email`),
+  ADD KEY `idx_createdAt` (`createdAt`);
+Run this only if indexes were not already created in CREATE TABLE.
+If your CREATE TABLE contact_inquiries already has PRIMARY KEY and KEY ..., skip this block.
+
+Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
+
+I’ll quickly check your running dev server output and the app’s API URL wiring to identify which exact path is returning 404 and why.
+
+404 (Not Found) means the browser reached a server, but that server has no route/file for the URL requested.
+
+In your setup, forms call:
+
+/api/contact
+/api/quote
+/api/inquiry
+So this error usually means one of these is true:
+
+Apache/PHP API is not running at http://localhost/api/*
+Vite proxy is not forwarding /api correctly
+Wrong base path/prefix (e.g. needs /AISCO/api instead of /api)
+Endpoint typo (route mismatch)
+What I can already see in your config
+Frontend uses apiUrl('/api/...') (good).
+vite.config.ts proxies /api to VITE_DEV_PROXY_TARGET or http://localhost (good).
+But in .env, VITE_API_URL=http://localhost:5173/ is set. This can still work, but if proxy isn’t active/restarted, requests stay on Vite and return 404.
+Quick checks (in this order)
+Open http://localhost/api/health in browser
+If this is 404, fix Apache alias / PHP API first.
+Restart Vite dev server after any .env or vite.config.ts change.
+Keep root .env like this for dev:
+VITE_API_URL= (empty/unset)
+optional: VITE_DEV_PROXY_TARGET=http://localhost
+Ensure api/.env has:
+API_PATH_PREFIX=/api
+Why your browser shows 404
+It is likely requesting http://localhost:5173/api/... and Vite is not successfully proxying to Apache, so Vite returns 404 itself.
+
+If you share the exact failing URL from DevTools Network (e.g. /api/contact response body + Request URL), I’ll tell you the exact fix in one step.
+
+he requested URL was not found on this server.
+
+
+
+Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80
+
+That error confirms the issue is Apache routing, not React.
+
+The requested URL was not found on this server at localhost:80 means Apache is running, but /api/... is not mapped to your PHP API folder.
+
+Fix
+Add API alias in Apache config (httpd.conf or your vhost file), then restart Apache:
+
+Alias /api "D:/Workability/AISCO/AISCO/api/public"
+<Directory "D:/Workability/AISCO/AISCO/api/public">
+    AllowOverride All
+    Require all granted
+</Directory>
+Also ensure Apache allows mod_rewrite and includes .htaccess support (AllowOverride All) for that directory.
+
+Verify
+Open: http://localhost/api/health
+You should get JSON (not Apache 404 page).
+Then your frontend requests to /api/contact, /api/quote, /api/inquiry will work.
+If your app is under subfolder
+If Apache serves project as http://localhost/AISCO/..., then use:
+
+API_PATH_PREFIX=/AISCO/api in api/.env
+Frontend calls should target /AISCO/api/... (or set VITE_API_URL=http://localhost/AISCO)
+If you want, I can give you the exact Apache file path + exact lines to paste for XAMPP default install.
+
+do the changeses needfull as you want 
+
+I’ll apply the safe project-side fixes now: update your root env so frontend always uses Vite proxy for /api/*, which avoids the broken localhost:5173 direct API target. Then I’ll share the exact Apache step you still need outside this repo.
+
+I found the misconfiguration in your .env; I’m updating it now so requests go through the Vite proxy correctly instead of targeting localhost:5173 as API origin.
+
+I made the needed project change in your root env:
+
+Updated .env to stop forcing VITE_API_URL=http://localhost:5173/
+Added VITE_DEV_PROXY_TARGET=http://localhost so Vite proxies /api/* to Apache
+What you need to do now
+Restart Vite (npm run dev) so env changes apply.
+Ensure Apache has the /api alias to api/public (this is still required).
+Test:
+http://localhost/api/health → should return JSON
+then submit form from http://localhost:5173
+If http://localhost/api/health still shows Apache 404, I’ll give you exact XAMPP httpd.conf lines and location for your machine.
+
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+warnOnce @ react-router-dom.js?v=b9533990:4391
+
+logDeprecation @ react-router-dom.js?v=b9533990:4394
+
+logV6DeprecationWarnings @ react-router-dom.js?v=b9533990:4397
+
+(anonymous) @ react-router-dom.js?v=b9533990:5269
+
+commitHookEffectListMount @ chunk-SVG7M4VJ.js?v=b9533990:16961
+
+commitPassiveMountOnFiber @ chunk-SVG7M4VJ.js?v=b9533990:18204
+
+commitPassiveMountEffects_complete @ chunk-SVG7M4VJ.js?v=b9533990:18177
+
+commitPassiveMountEffects_begin @ chunk-SVG7M4VJ.js?v=b9533990:18167
+
+commitPassiveMountEffects @ chunk-SVG7M4VJ.js?v=b9533990:18157
+
+flushPassiveEffectsImpl @ chunk-SVG7M4VJ.js?v=b9533990:19541
+
+flushPassiveEffects @ chunk-SVG7M4VJ.js?v=b9533990:19498
+
+(anonymous) @ chunk-SVG7M4VJ.js?v=b9533990:19379
+
+workLoop @ chunk-SVG7M4VJ.js?v=b9533990:195
+
+flushWork @ chunk-SVG7M4VJ.js?v=b9533990:174
+
+performWorkUntilDeadline @ chunk-SVG7M4VJ.js?v=b9533990:382Understand this warning
+
+react-router-dom.js?v=b9533990:4391 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+warnOnce @ react-router-dom.js?v=b9533990:4391
+
+logDeprecation @ react-router-dom.js?v=b9533990:4394
+
+logV6DeprecationWarnings @ react-router-dom.js?v=b9533990:4400
+
+(anonymous) @ react-router-dom.js?v=b9533990:5269
+
+commitHookEffectListMount @ chunk-SVG7M4VJ.js?v=b9533990:16961
+
+commitPassiveMountOnFiber @ chunk-SVG7M4VJ.js?v=b9533990:18204
+
+commitPassiveMountEffects_complete @ chunk-SVG7M4VJ.js?v=b9533990:18177
+
+commitPassiveMountEffects_begin @ chunk-SVG7M4VJ.js?v=b9533990:18167
+
+commitPassiveMountEffects @ chunk-SVG7M4VJ.js?v=b9533990:18157
+
+flushPassiveEffectsImpl @ chunk-SVG7M4VJ.js?v=b9533990:19541
+
+flushPassiveEffects @ chunk-SVG7M4VJ.js?v=b9533990:19498
+
+(anonymous) @ chunk-SVG7M4VJ.js?v=b9533990:19379
+
+workLoop @ chunk-SVG7M4VJ.js?v=b9533990:195
+
+flushWork @ chunk-SVG7M4VJ.js?v=b9533990:174
+
+performWorkUntilDeadline @ chunk-SVG7M4VJ.js?v=b9533990:382Understand this warning
+
+api/contact:1  Failed to load resource: the server responded with a status of 404 (Not Found)
+
+These are warnings, not crashes. Your app still runs.
+
+v7_startTransition warning: React Router v7 will wrap some updates in React.startTransition for smoother UI during navigation.
+v7_relativeSplatPath warning: behavior of relative paths inside wildcard (*, “splat”) routes will change in v7.
+The long stack trace is just where React logs the warning in dev mode.
+You have 2 choices:
+
+Ignore for now (safe short-term in v6).
+Opt in now to reduce future upgrade risk by enabling Router future flags.
+If you use BrowserRouter, it looks like:
+
+<BrowserRouter
+  future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+>
+  <App />
+</BrowserRouter>
+api/contact 404 is a real error (separate from warnings).
+It means /api/contact is not found on Apache side, so backend routing is still not correctly exposed.
+
+Check this first:
+
+http://localhost/api/health must return JSON.
+If that URL is 404, your Apache Alias /api .../api/public (or equivalent vhost mapping) is still missing/wrong. Once that works, /api/contact should work too.
+
+make all the changes you need 
+
+I’m going to apply code-side fixes now: enable React Router future flags to remove those warnings, and harden dev API routing so /api/* works reliably even if Apache is mounted under a subpath. Then I’ll verify lints.
+
+I found two code changes I can safely make now: opt into React Router v7 future flags (removes those warnings) and add configurable proxy path rewrite in Vite so /api/* can map to subfolder APIs like /AISCO/api/* when needed. I’m applying those now.
+
+Implemented the code-side changes needed in your project.
+
+What I changed
+Enabled React Router future flags in src/App.tsx to remove the v7 deprecation warnings:
+v7_startTransition: true
+v7_relativeSplatPath: true
+Improved Vite proxy in vite.config.ts:
+Added VITE_DEV_PROXY_API_PREFIX support
+Added rewrite so /api/* can proxy to another prefix when needed
+Updated .env.example with docs for the new proxy prefix variable
+Why this helps
+The React Router warnings are now handled proactively.
+Your 404 issue can now be solved in either Apache style:
+API at http://localhost/api/* (default)
+API at http://localhost/AISCO/api/* (set one env var)
+What you should do now
+Restart dev server (npm run dev) so config changes apply.
+In root .env, set one of these depending on your Apache route:
+Default:
+VITE_DEV_PROXY_TARGET=http://localhost
+VITE_DEV_PROXY_API_PREFIX=/api
+Subfolder:
+VITE_DEV_PROXY_TARGET=http://localhost
+VITE_DEV_PROXY_API_PREFIX=/AISCO/api
+Test:
+http://localhost/api/health (or /AISCO/api/health)
+Submit contact form again
+If you tell me which URL works in browser (/api/health or /AISCO/api/health), I’ll give you the exact final .env values with no trial and error.
+
+This page isn't working
+
+localhost sent an invalid response.
+
+I’ll quickly check which local endpoint is returning an invalid response and verify whether Apache or Vite is serving it incorrectly, then I’ll give you the exact fix.
+
+The issue is now confirmed:
+
+http://localhost works (200)
+http://localhost/api/health returns 404
+http://localhost:5173/api/health also returns 404 (because Vite proxy forwards to Apache, which has no /api route)
+So the problem is not React/Vite now. It is Apache config.
+
+What must be fixed in Apache (required)
+Add this to XAMPP Apache config (httpd.conf or httpd-vhosts.conf), then restart Apache:
+
+Alias /api "D:/Workability/AISCO/AISCO/api/public"
+<Directory "D:/Workability/AISCO/AISCO/api/public">
+    AllowOverride All
+    Require all granted
+</Directory>
+Also ensure:
+
+mod_rewrite is enabled
+AllowOverride All is active for that directory
+After restart, verify
+Open:
+
+http://localhost/api/health
+Expected: JSON response (status ok), not Apache 404 page.
+
+I already completed project-side fixes earlier (env/proxy/router warnings).
+At this point, this one Apache alias change is the blocker. If you want, I can give exact XAMPP file location + where to paste based on your install path.
+
+still api health responseded as page not working
+
+I’ll re-check the exact response code/body from api/health right now so we can pinpoint whether it’s still 404, 500, or a PHP crash, then I’ll give the exact next step.
+
+Confirmed: http://localhost/api/health is still returning HTTP 404 (empty body), so Apache is definitely not mapping /api to your project API folder yet.
+
+Do this exactly in XAMPP
+Open: C:\xampp\apache\conf\httpd.conf
+At the end of file, paste:
+Alias /api "D:/Workability/AISCO/AISCO/api/public"
+<Directory "D:/Workability/AISCO/AISCO/api/public">
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+Verify modules are enabled in same file:
+LoadModule rewrite_module modules/mod_rewrite.so
+LoadModule alias_module modules/mod_alias.so
+(If commented with #, uncomment.)
+
+Save file.
+Restart Apache from XAMPP Control Panel (Stop -> Start).
+Immediate test
+Open in browser:
+
+http://localhost/api/health
+If still failing, open:
+
+C:\xampp\apache\logs\error.log
+and share the latest 10-20 lines; I’ll pinpoint the exact config line causing the 404.
+
+[Mon Apr 13 09:10:04.145420 2026] [ssl:warn] [pid 15712:tid 464] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:04.174203 2026] [ssl:warn] [pid 15712:tid 464] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:04.210219 2026] [mpm_winnt:notice] [pid 15712:tid 464] AH00455: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 configured -- resuming normal operations
+
+[Mon Apr 13 09:10:04.210219 2026] [mpm_winnt:notice] [pid 15712:tid 464] AH00456: Apache Lounge VS17 Server built: Oct 18 2023 13:03:18
+
+[Mon Apr 13 09:10:04.211219 2026] [core:notice] [pid 15712:tid 464] AH00094: Command line: 'C:\\xampp\\apache\\bin\\httpd.exe -d C:/xampp/apache'
+
+[Mon Apr 13 09:10:04.225921 2026] [mpm_winnt:notice] [pid 15712:tid 464] AH00418: Parent: Created child process 2192
+
+[Mon Apr 13 09:10:04.668214 2026] [ssl:warn] [pid 2192:tid 492] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:04.701433 2026] [ssl:warn] [pid 2192:tid 492] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:04.734916 2026] [mpm_winnt:notice] [pid 2192:tid 492] AH00354: Child: Starting 150 worker threads.
+
+[Mon Apr 13 09:10:56.053441 2026] [ssl:warn] [pid 15796:tid 500] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:56.087441 2026] [ssl:warn] [pid 15796:tid 500] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:56.123026 2026] [mpm_winnt:notice] [pid 15796:tid 500] AH00455: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 configured -- resuming normal operations
+
+[Mon Apr 13 09:10:56.123026 2026] [mpm_winnt:notice] [pid 15796:tid 500] AH00456: Apache Lounge VS17 Server built: Oct 18 2023 13:03:18
+
+[Mon Apr 13 09:10:56.123026 2026] [core:notice] [pid 15796:tid 500] AH00094: Command line: 'c:\\xampp\\apache\\bin\\httpd.exe -d C:/xampp/apache'
+
+[Mon Apr 13 09:10:56.130946 2026] [mpm_winnt:notice] [pid 15796:tid 500] AH00418: Parent: Created child process 15200
+
+[Mon Apr 13 09:10:56.427858 2026] [ssl:warn] [pid 15200:tid 472] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:56.457015 2026] [ssl:warn] [pid 15200:tid 472] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Mon Apr 13 09:10:56.490807 2026] [mpm_winnt:notice] [pid 15200:tid 472] AH00354: Child: Starting 150 worker threads.
+
+[Tue Apr 14 11:10:25.272368 2026] [ssl:warn] [pid 18000:tid 436] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:25.291718 2026] [core:warn] [pid 18000:tid 436] AH00098: pid file C:/xampp/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+
+[Tue Apr 14 11:10:25.293725 2026] [ssl:warn] [pid 18000:tid 436] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:25.366862 2026] [mpm_winnt:notice] [pid 18000:tid 436] AH00455: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 configured -- resuming normal operations
+
+[Tue Apr 14 11:10:25.366862 2026] [mpm_winnt:notice] [pid 18000:tid 436] AH00456: Apache Lounge VS17 Server built: Oct 18 2023 13:03:18
+
+[Tue Apr 14 11:10:25.366862 2026] [core:notice] [pid 18000:tid 436] AH00094: Command line: 'c:\\xampp\\apache\\bin\\httpd.exe -d C:/xampp/apache'
+
+[Tue Apr 14 11:10:25.371869 2026] [mpm_winnt:notice] [pid 18000:tid 436] AH00418: Parent: Created child process 24620
+
+[Tue Apr 14 11:10:25.707668 2026] [ssl:warn] [pid 24620:tid 432] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:25.726472 2026] [ssl:warn] [pid 24620:tid 432] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:25.756733 2026] [mpm_winnt:notice] [pid 24620:tid 432] AH00354: Child: Starting 150 worker threads.
+
+[Tue Apr 14 11:10:49.857120 2026] [mpm_winnt:crit] [pid 24620:tid 432] AH02538: Child: Parent process exited abruptly. Child process is ending
+
+[Tue Apr 14 11:10:59.182414 2026] [ssl:warn] [pid 21908:tid 180] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:59.200185 2026] [core:warn] [pid 21908:tid 180] AH00098: pid file C:/xampp/apache/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+
+[Tue Apr 14 11:10:59.201689 2026] [ssl:warn] [pid 21908:tid 180] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:59.261403 2026] [mpm_winnt:notice] [pid 21908:tid 180] AH00455: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 configured -- resuming normal operations
+
+[Tue Apr 14 11:10:59.261403 2026] [mpm_winnt:notice] [pid 21908:tid 180] AH00456: Apache Lounge VS17 Server built: Oct 18 2023 13:03:18
+
+[Tue Apr 14 11:10:59.261403 2026] [core:notice] [pid 21908:tid 180] AH00094: Command line: 'C:\\xampp\\apache\\bin\\httpd.exe -d C:/xampp/apache'
+
+[Tue Apr 14 11:10:59.267927 2026] [mpm_winnt:notice] [pid 21908:tid 180] AH00418: Parent: Created child process 884
+
+[Tue Apr 14 11:10:59.651474 2026] [ssl:warn] [pid 884:tid 444] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:59.670618 2026] [ssl:warn] [pid 884:tid 444] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 11:10:59.713755 2026] [mpm_winnt:notice] [pid 884:tid 444] AH00354: Child: Starting 150 worker threads.
+
+[Tue Apr 14 12:06:32.556824 2026] [mpm_winnt:notice] [pid 21908:tid 180] AH00422: Parent: Received shutdown signal -- Shutting down the server.
+
+[Tue Apr 14 12:06:34.562162 2026] [mpm_winnt:notice] [pid 884:tid 444] AH00364: Child: All worker threads have exited.
+
+[Tue Apr 14 12:06:34.664905 2026] [mpm_winnt:notice] [pid 21908:tid 180] AH00430: Parent: Child process 884 exited successfully.
+
+[Tue Apr 14 12:06:36.798468 2026] [ssl:warn] [pid 5660:tid 440] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 12:06:36.822181 2026] [ssl:warn] [pid 5660:tid 440] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 12:06:36.847662 2026] [mpm_winnt:notice] [pid 5660:tid 440] AH00455: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 configured -- resuming normal operations
+
+[Tue Apr 14 12:06:36.847662 2026] [mpm_winnt:notice] [pid 5660:tid 440] AH00456: Apache Lounge VS17 Server built: Oct 18 2023 13:03:18
+
+[Tue Apr 14 12:06:36.847662 2026] [core:notice] [pid 5660:tid 440] AH00094: Command line: 'C:\\xampp\\apache\\bin\\httpd.exe -d C:/xampp/apache'
+
+[Tue Apr 14 12:06:36.853345 2026] [mpm_winnt:notice] [pid 5660:tid 440] AH00418: Parent: Created child process 2620
+
+[Tue Apr 14 12:06:37.089245 2026] [ssl:warn] [pid 2620:tid 448] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 12:06:37.109270 2026] [ssl:warn] [pid 2620:tid 448] AH01909: www.example.com:443:0 server certificate does NOT include an ID which matches the server name
+
+[Tue Apr 14 12:06:37.135216 2026] [mpm_winnt:notice] [pid 2620:tid 448] AH00354: Child: Starting 150 worker threads.
+
+These logs are helpful: they show Apache starts normally, but they do not show any /api alias being loaded or any PHP route hit.
+So the 404 is still a routing config issue, not app code.
+
+What this log means
+AH01909 SSL warning is unrelated to /api 404.
+No fatal Apache config errors.
+Your /api mapping is likely missing from the active config file (or added in a file Apache is not reading).
+Do this exact check (most important)
+In C:\xampp\apache\conf\httpd.conf, confirm this line is enabled (not commented):
+
+Include conf/extra/httpd-vhosts.conf
+If it is disabled, Apache ignores httpd-vhosts.conf.
+
+Put the alias in the file that is definitely loaded
+Add this at end of C:\xampp\apache\conf\httpd.conf (safest):
+
+Alias /api "D:/Workability/AISCO/AISCO/api/public"
+<Directory "D:/Workability/AISCO/AISCO/api/public">
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+Also ensure modules are enabled:
+
+LoadModule rewrite_module modules/mod_rewrite.so
+LoadModule alias_module modules/mod_alias.so
+Then restart Apache fully (Stop, wait 3 sec, Start).
+
+Quick verification
+Open:
+
+http://localhost/api/health
+If still 404, run this in browser:
+
+http://localhost/api/index.php
+If index.php works but /health fails, then .htaccess/rewrite is not active (AllowOverride/module issue).
+If both fail, alias path is still not loaded or wrong.
+
+If you want, I can give you a one-shot minimal httpd.conf snippet with exact insertion point (near the bottom) so there’s no ambiguity.
+
+now ok came 
+
+Perfect — that confirms routing is fixed and API is reachable now.
+
+Next quick checks to fully validate:
+
+Open http://localhost/api/health?db=1 and confirm DB reports ok.
+Submit one Contact/Quote form from http://localhost:5173.
+In Network tab, confirm POST /api/contact or POST /api/quote returns 200.
+If you want, I can now help you do a final cleanup pass (remove old/dead env values and keep only required config for local + production).
+
