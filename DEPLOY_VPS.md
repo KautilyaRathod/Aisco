@@ -1,49 +1,45 @@
 # VPS Deployment Guide
 
-This guide will help you deploy the AISCO project on a VPS with nginx as a reverse proxy.
+Deploy AISCO with **nginx**, **PHP-FPM**, and **MySQL** (no Node process for the API).
 
 ## Prerequisites
 
 - Ubuntu/Debian VPS (20.04+ recommended)
 - Domain name pointing to your VPS IP
-- SSH access to your VPS
-- Node.js 18+ and npm installed
-- MySQL/MariaDB installed
-- Nginx installed
+- SSH access
+- Node.js 18+ and npm (for **building** the frontend only)
+- PHP 8+ with FPM, `pdo_mysql`, `mbstring`, `openssl` (for PHPMailer)
+- Composer
+- MySQL/MariaDB
+- Nginx
 
-## Step 1: Server Setup
-
-### Install Required Software
+## Step 1: Server setup
 
 ```bash
-# Update system
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js 18+
+# Node (frontend build only)
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# Install MySQL
-sudo apt install -y mysql-server
+# PHP-FPM + extensions
+sudo apt install -y php-fpm php-mysql php-mbstring php-xml curl unzip
 
-# Install Nginx
-sudo apt install -y nginx
+# Composer
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
 
-# Install PM2 (process manager)
-sudo npm install -g pm2
+# MySQL + Nginx
+sudo apt install -y mysql-server nginx
 ```
 
-## Step 2: Database Setup
+## Step 2: Database
 
 ```bash
-# Secure MySQL installation
 sudo mysql_secure_installation
-
-# Create database and user
 sudo mysql -u root -p
 ```
 
-In MySQL:
 ```sql
 CREATE DATABASE aisco CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'aisco_user'@'localhost' IDENTIFIED BY 'strong_password_here';
@@ -52,223 +48,127 @@ FLUSH PRIVILEGES;
 EXIT;
 ```
 
-Create database tables:
-```bash
-mysql -u aisco_user -p aisco < database_schema.sql
-```
-
-## Step 3: Upload Project to VPS
-
-### Option A: Using Git (Recommended)
+Import schema (from your project clone):
 
 ```bash
-# On your local machine
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-git push -u origin main
-
-# On VPS
-cd /var/www
-sudo git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git yourdomain.com
-cd yourdomain.com/project
+mysql -u aisco_user -p aisco < /var/www/yourdomain.com/project/aisco.sql
 ```
 
-### Option B: Using SCP
+## Step 3: Upload project
 
-```bash
-# On your local machine
-scp -r project/ user@your-vps-ip:/var/www/yourdomain.com/
-```
+Same as before (git clone or SCP) into e.g. `/var/www/yourdomain.com/project`.
 
-## Step 4: Install Dependencies
+## Step 4: Install dependencies
 
 ```bash
 cd /var/www/yourdomain.com/project
-npm install --production
-```
 
-## Step 5: Configure Environment Variables
+# Frontend
+npm ci
+npm run build
 
-```bash
-# Copy example env file
+# PHP API
+cd api
+composer install --no-dev --optimize-autoloader
 cp .env.example .env
-
-# Edit with your values
 nano .env
 ```
 
-Update `.env`:
-```env
-PORT=4000
-HOST=0.0.0.0
-NODE_ENV=production
+Set in `api/.env` at least: `MYSQL_*`, `SMTP_*`, `CLIENT_URL=https://yourdomain.com`, `APP_ENV=production`, `API_PATH_PREFIX=/api`.
 
-MYSQL_HOST=localhost
-MYSQL_USER=aisco_user
-MYSQL_PASSWORD=strong_password_here
-MYSQL_DATABASE=aisco
-
-CLIENT_URL=https://yourdomain.com
-SERVE_STATIC=false
-```
-
-## Step 6: Build Frontend
+## Step 5: File permissions
 
 ```bash
-# Install dev dependencies for build
-npm install
-
-# Build frontend
-npm run build
+sudo chown -R www-data:www-data /var/www/yourdomain.com/project/api
 ```
 
-## Step 7: Configure Nginx
+## Step 6: Nginx
 
 ```bash
-# Copy nginx config
 sudo cp nginx.conf.example /etc/nginx/sites-available/yourdomain.com
-
-# Edit with your domain
 sudo nano /etc/nginx/sites-available/yourdomain.com
 ```
 
-Update the config:
-- Replace `yourdomain.com` with your actual domain
-- Update `root` path to `/var/www/yourdomain.com/project/dist`
+- Replace `yourdomain.com` and paths (`/var/www/yourdomain.com/project`).
+- Set `fastcgi_pass` to your PHP socket (e.g. `ls /run/php/`).
 
 ```bash
-# Enable site
-sudo ln -s /etc/nginx/sites-available/yourdomain.com /etc/nginx/sites-enabled/
-
-# Test nginx configuration
+sudo ln -sf /etc/nginx/sites-available/yourdomain.com /etc/nginx/sites-enabled/
 sudo nginx -t
-
-# Reload nginx
 sudo systemctl reload nginx
 ```
 
-## Step 8: Start Backend with PM2
+## Step 7: PHP-FPM
 
 ```bash
-cd /var/www/yourdomain.com/project
-
-# Start server with PM2
-pm2 start server.cjs --name aisco-api
-
-# Save PM2 configuration
-pm2 save
-
-# Setup PM2 to start on boot
-pm2 startup
+sudo systemctl enable php8.2-fpm
+sudo systemctl restart php8.2-fpm
 ```
 
-## Step 9: Setup SSL Certificate (Let's Encrypt)
+Adjust version (`php8.1-fpm`, etc.) to match `apt install`.
+
+## Step 8: SSL (Let's Encrypt)
 
 ```bash
-# Install Certbot
 sudo apt install -y certbot python3-certbot-nginx
-
-# Get SSL certificate
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
-
-# Certbot will automatically update nginx config
-# Test auto-renewal
-sudo certbot renew --dry-run
 ```
 
-## Step 10: Firewall Configuration
+## Step 9: Firewall
 
 ```bash
-# Allow HTTP, HTTPS, and SSH
 sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw enable
 ```
 
-## Step 11: Verify Deployment
-
-1. **Check backend health:**
-   ```bash
-   curl http://localhost:4000/api/health
-   ```
-
-2. **Check nginx:**
-   ```bash
-   sudo systemctl status nginx
-   ```
-
-3. **Check PM2:**
-   ```bash
-   pm2 status
-   pm2 logs aisco-api
-   ```
-
-4. **Visit your domain:**
-   - Frontend: `https://yourdomain.com`
-   - API Health: `https://yourdomain.com/api/health`
-
-## Maintenance Commands
+## Step 10: Verify
 
 ```bash
-# View logs
-pm2 logs aisco-api
-sudo tail -f /var/log/nginx/error.log
+curl -s http://localhost/api/health
+curl -s https://yourdomain.com/api/health
+```
 
-# Restart services
-pm2 restart aisco-api
-sudo systemctl restart nginx
+Visit the site; forms should post to `/api/*`.
 
-# Update application
+## Maintenance
+
+```bash
 cd /var/www/yourdomain.com/project
 git pull
-npm install
+npm ci
 npm run build
-pm2 restart aisco-api
+cd api && composer install --no-dev --optimize-autoloader
+sudo systemctl reload php8.2-fpm nginx
 ```
 
 ## Troubleshooting
 
-### Backend not responding
-- Check if PM2 process is running: `pm2 status`
-- Check logs: `pm2 logs aisco-api`
-- Verify database connection in `.env`
+### API 502 / 404
 
-### 502 Bad Gateway
-- Check if backend is running on port 4000: `netstat -tulpn | grep 4000`
-- Verify nginx proxy_pass URL matches backend port
-- Check nginx error logs: `sudo tail -f /var/log/nginx/error.log`
+- Check PHP-FPM: `sudo systemctl status php8.2-fpm`
+- Confirm `SCRIPT_FILENAME` in nginx matches `api/public/index.php` on disk
+- Confirm `api/.env` exists and `API_PATH_PREFIX=/api`
 
-### CORS errors
-- Verify `CLIENT_URL` in `.env` matches your domain
-- Check nginx headers are being forwarded correctly
+### CORS
 
-### Static files not loading
-- Verify build output exists: `ls -la dist/`
-- Check nginx root path is correct
-- Verify file permissions: `sudo chown -R www-data:www-data dist/`
+- Set `CLIENT_URL` in `api/.env` to your public origin (e.g. `https://yourdomain.com`)
 
-## Security Checklist
+### Database errors
 
-- [ ] Change default MySQL root password
-- [ ] Use strong database user password
-- [ ] Keep `.env` file secure (not in git)
-- [ ] Enable firewall (UFW)
-- [ ] Setup SSL certificate
-- [ ] Keep system and packages updated
-- [ ] Use PM2 for process management
-- [ ] Setup log rotation
-- [ ] Regular backups of database
+- Test: `mysql -u aisco_user -p aisco -e "SELECT 1"`
 
-## Database Backup
+## Database backup
 
 ```bash
-# Create backup
 mysqldump -u aisco_user -p aisco > backup_$(date +%Y%m%d).sql
-
-# Restore backup
-mysql -u aisco_user -p aisco < backup_20231112.sql
 ```
 
+## Security checklist
+
+- [ ] Strong MySQL user password
+- [ ] `api/.env` not in git
+- [ ] UFW enabled
+- [ ] HTTPS via Certbot
+- [ ] Keep system packages updated

@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-
-public
+/public
+api/vendor
 
 # Editor directories and files
 .vscode/*

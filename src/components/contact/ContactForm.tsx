@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle, User, Building, Phone, Mail, MessageSquare, ChevronDown, MessageCircle } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
-// Wire up to backend API
-// In production with nginx proxy, use relative path (empty string)
-// In development, use full URL or let vite proxy handle it
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 
-  (import.meta.env.PROD ? '' : 'http://localhost:4000');
+import { apiUrl } from '../../utils/apiUrl';
 
 // WhatsApp number for contact
 const WHATSAPP_NUMBER = '244931977848';
@@ -39,7 +35,7 @@ const ContactForm = () => {
     }
 
     try {
-      const resp = await fetch(`${API_BASE_URL}/api/contact`, {
+      const resp = await fetch(apiUrl('/api/contact'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

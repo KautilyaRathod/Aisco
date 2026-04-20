@@ -1,7 +1,7 @@
 # AISCO System Architecture Documentation
 
 ## Overview
-AISCO (Angola Iron and Steel Corporation) is a full-stack web application for a steel manufacturing company, built with React (TypeScript), Vite, Express.js, and MySQL. The application showcases the company's products, manufacturing processes, quality certifications, and provides contact/quote request functionality.
+AISCO (Angola Iron and Steel Corporation) is a full-stack web application for a steel manufacturing company, built with React (TypeScript), Vite, PHP (API), and MySQL. The application showcases the company's products, manufacturing processes, quality certifications, and provides contact/quote request functionality.
 
 ---
 
@@ -17,11 +17,11 @@ AISCO (Angola Iron and Steel Corporation) is a full-stack web application for a 
 - **Animation**: Custom CSS animations + Intersection Observer API
 
 ### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js 5.1.0
-- **Database**: MySQL2 3.15.3
-- **CORS**: cors 2.8.5
-- **Environment**: dotenv
+- **Runtime**: PHP 8+ (FPM or Apache module)
+- **HTTP**: Single front controller `api/public/index.php`
+- **Database**: MySQL via PDO
+- **Email**: PHPMailer (SMTP) via Composer
+- **Config**: `vlucas/phpdotenv` (`api/.env`)
 
 ### Development Tools
 - **Linting**: ESLint 9.9.1 with TypeScript ESLint
@@ -66,8 +66,8 @@ AISCO/
 │       └── useInView.ts          # Intersection Observer hook for animations
 ├── public/                       # Static assets (images, PDFs, videos)
 ├── dist/                         # Production build output
-├── server.cjs                    # Express.js backend server
-├── package.json                  # Dependencies and scripts
+├── api/                          # PHP API (Composer, public/index.php)
+├── package.json                  # Frontend dependencies and scripts
 ├── vite.config.ts                # Vite configuration
 ├── tailwind.config.js            # Tailwind CSS configuration
 ├── tsconfig.json                 # TypeScript configuration
@@ -148,19 +148,18 @@ All pages follow a consistent pattern:
 
 ---
 
-### Backend Architecture (`server.cjs`)
+### Backend Architecture (`api/`)
 
 #### Server Configuration
-- **Port**: 4000 (configurable via `PORT` env variable)
-- **Host**: 0.0.0.0 (listens on all interfaces for VPS deployment)
-- **Environment**: Development/Production aware
-- **CORS**: Configured for production with environment-based origins
-- **Proxy Trust**: Enabled for nginx reverse proxy
+- **Entry**: `api/public/index.php` (Apache rewrite or nginx `fastcgi_param SCRIPT_FILENAME`)
+- **URL prefix**: `/api` by default (`API_PATH_PREFIX` in `api/.env` for subfolder installs)
+- **Environment**: `APP_ENV` / `NODE_ENV`-style `production` flag for CORS
+- **CORS**: `CLIENT_URL` in production; dev allows `http://localhost:5173`
 
 #### Database Connection
 - **Database**: MySQL (`aisco`)
-- **Connection**: mysql2 with connection pooling
-- **Configuration**: Environment variables (MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE)
+- **Connection**: PDO with prepared statements
+- **Configuration**: `api/.env` (MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE)
 
 #### API Endpoints
 
@@ -180,7 +179,10 @@ All pages follow a consistent pattern:
    - Health check endpoint
    - Returns: `{ status: 'ok', timestamp: ISO string }`
 
-#### Database Schema (Inferred from server.cjs)
+5. **POST `/api/test-email`** (optional)
+   - Sends a test message via SMTP (same behavior as former Node endpoint)
+
+#### Database Schema (see `aisco.sql`)
 
 **`quote_requests` table:**
 - id (auto-increment primary key)
@@ -265,13 +267,12 @@ All pages follow a consistent pattern:
 ### Development Mode
 ```bash
 npm run dev        # Starts Vite dev server (port 5173)
-npm run server     # Starts Express backend (port 4000)
 ```
 
 **Vite Proxy Configuration:**
-- In development, Vite proxies `/api/*` requests to `http://localhost:4000`
+- In development, Vite proxies `/api/*` to `http://localhost` (Apache/XAMPP PHP on port 80)
 - Frontend runs on `http://localhost:5173`
-- Backend runs on `http://localhost:4000`
+- Start Apache + MySQL (XAMPP) and configure `/api` → `api/public` (see `api/README.md`)
 
 ### Production Build
 ```bash
@@ -287,41 +288,34 @@ npm run preview    # Preview production build locally
 
 ### Environment Variables
 
-**Frontend (.env):**
-- `VITE_API_URL`: API base URL (optional, defaults to empty string in production, localhost:4000 in dev)
+**Frontend (optional root `.env`):**
+- `VITE_API_URL`: API base URL (optional; empty uses relative `/api` or Vite proxy in dev)
 - `VITE_GOOGLE_MAPS_API_KEY`: Google Maps API key
 
-**Backend (.env):**
-- `PORT`: Server port (default: 4000)
-- `HOST`: Server host (default: 0.0.0.0)
-- `NODE_ENV`: Environment (development/production)
-- `MYSQL_HOST`: Database host
-- `MYSQL_USER`: Database user
-- `MYSQL_PASSWORD`: Database password
-- `MYSQL_DATABASE`: Database name
-- `CLIENT_URL`: CORS allowed origin
-- `SERVE_STATIC`: Enable static file serving (true/false)
+**Backend (`api/.env`):**
+- `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`
+- `API_PATH_PREFIX`: URL prefix (default `/api`)
+- `CLIENT_URL`: CORS allowed origin in production
+- `SMTP_*`: SMTP for PHPMailer (host, port, user, password, recipient, etc.)
 
 ---
 
 ## Deployment
 
 ### Production Deployment Options
-1. **VPS with Nginx** (Recommended)
-   - Nginx as reverse proxy
-   - PM2 for process management
+1. **VPS with Nginx + PHP-FPM** (Recommended)
+   - Nginx serves `dist/` and passes `/api` to PHP-FPM (`api/public/index.php`)
    - MySQL database
    - SSL/HTTPS support
    - See `DEPLOY_VPS.md` for full guide
 
 2. **Static Hosting** (Frontend only)
    - Can deploy `dist/` to any static host
-   - Forms won't function without backend
+   - Forms require a hosted PHP API (or another backend)
 
 ### Deployment Configuration
-- **Nginx**: Reverse proxy for API routes (`/api/*` → backend:4000)
-- **Static Files**: Served directly by Nginx
-- **PM2**: Process manager for Node.js backend
+- **Nginx**: Static SPA + `fastcgi_pass` for `/api` to PHP
+- **PHP-FPM**: Runs the API application
 - **SSL**: Let's Encrypt certificates via Certbot
 
 ---
@@ -332,12 +326,12 @@ npm run preview    # Preview production build locally
 
 **API Base URL Logic:**
 ```typescript
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.PROD ? '' : 'http://localhost:4000');
+const API_BASE_URL = import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? '' : '');
 ```
 
-- **Development**: Uses `http://localhost:4000` or Vite proxy
-- **Production**: Uses relative paths (empty string) so nginx handles routing
+- **Development**: Vite proxy forwards `/api` to `http://localhost` (Apache/XAMPP)
+- **Production**: Relative `/api` (same origin) unless `VITE_API_URL` is set
 
 **Request Format:**
 - Method: POST
@@ -399,9 +393,9 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
 - **Google Translate Conflicts**: Auto-reload on DOM manipulation errors
 
 ### Backend
-- **Database Errors**: 500 status code with error message
-- **Connection Errors**: Process exits if DB connection fails
-- **Validation**: Basic validation in form endpoints
+- **Database Errors**: 500 status code with error message (JSON)
+- **Connection Errors**: Returned as 500 if PDO fails on request
+- **Validation**: Minimal JSON parsing in PHP handlers
 
 ---
 
@@ -427,7 +421,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
 
 ## Known Limitations
 
-1. **No Email Service**: Forms submit to database only, no email notifications
+1. **Email depends on SMTP**: Configure `api/.env` SMTP variables for notifications
 2. **Google Translate Dependency**: Requires internet connection for translation
 3. **No Admin Panel**: Database must be accessed directly for form submissions
 4. **No Authentication**: Backend endpoints are public (should add auth for production)
@@ -437,8 +431,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
 
 ## Future Enhancements
 
-1. Email notification system for form submissions
-2. Admin dashboard for viewing submissions
+1. Admin dashboard for viewing submissions
 3. Authentication and authorization
 4. Rate limiting for API endpoints
 5. Full i18n library instead of Google Translate
@@ -473,13 +466,10 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
 ### Production Dependencies (Frontend)
 - react, react-dom, react-router-dom
 - lucide-react (icons)
-- axios (HTTP client - if used)
 
-### Production Dependencies (Backend)
-- express
-- mysql2
-- cors
-- dotenv
+### Backend (PHP, Composer in `api/`)
+- phpmailer/phpmailer
+- vlucas/phpdotenv
 
 ### Development Dependencies
 - vite

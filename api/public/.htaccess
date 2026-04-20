@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Must match the public URL path of this folder (e.g. /api or /AISCO/api — see api/README.md)
+  RewriteBase /api
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ index.php [L,QSA]
+</IfModule>

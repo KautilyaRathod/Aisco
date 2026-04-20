@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { Send, Phone, MessageCircle, CheckCircle, ArrowRight, Calculator } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
-
-// Wire up to backend API
-// In production with nginx proxy, use relative path (empty string)
-// In development, use full URL or let vite proxy handle it
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 
-  (import.meta.env.PROD ? '' : 'http://localhost:4000');
+import { apiUrl } from '../../utils/apiUrl';
 
 const ProductInquiry = () => {
   const [ref, isInView] = useInView({ threshold: 0.3 });
@@ -26,7 +21,7 @@ const ProductInquiry = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const resp = await fetch(`${API_BASE_URL}/api/inquiry`, {
+      const resp = await fetch(apiUrl('/api/inquiry'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
